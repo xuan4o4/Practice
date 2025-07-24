@@ -6,6 +6,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 
 public class GameJFrame extends JFrame {
   int[][] data = new int[4][4];
@@ -49,24 +50,23 @@ public class GameJFrame extends JFrame {
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
         int number = data[i][j];
-        //画像の ImageIcon オブジェクトを作成する
         //JLabel のオブジェクトを作成する
-        JLabel jLabel = new JLabel(new ImageIcon(
-            "C:\\Users\\user\\Desktop\\Practice\\Java\\PuzzleGame\\image\\animal\\animal1\\"
-                + number + ".jpg"));
+        JLabel jLabel = new JLabel(new ImageIcon("image\\animal\\animal1\\" + number + ".jpg"));
+        jLabel.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         //位置とサイズを設定する
-        jLabel.setBounds(105 * j, 105 * i, 105, 105);
+        jLabel.setBounds(105 * j + 83, 105 * i + 134, 105, 105);
 
         //画面に追加する
         this.getContentPane().add(jLabel);
-        number++;
       }
     }
 
-
+    //背景画像追加
+    JLabel background = new JLabel(new ImageIcon("image\\background.png"));
+    background.setBounds(40, 40, 508, 560);
+    this.getContentPane().add(background);
   }
-
 
   private void initJFrame() {
     //ウィンドウのサイズを設定する
