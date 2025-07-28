@@ -1,5 +1,8 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -10,12 +13,13 @@ import javax.swing.JMenuItem;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
-public class GameJFrame extends JFrame implements KeyListener {
+public class GameJFrame extends JFrame implements KeyListener, ActionListener {
+  Random random = new Random();
   String path = "image\\animal\\animal3\\";
   int[][] data = new int[4][4];
   int x;
   int y;
-
+  int step = 0;
   int[][] win = {
       {1,2,3,4},
       {5,6,7,8},
@@ -23,6 +27,13 @@ public class GameJFrame extends JFrame implements KeyListener {
       {13,14,15,0},
   };
 
+  JMenu changeImage = new JMenu("画像変更");
+  JMenuItem girl = new JMenuItem("美人");
+  JMenuItem animal = new JMenuItem("動物");
+  JMenuItem sport = new JMenuItem("スポーツ");
+  JMenuItem rePlayItem = new JMenuItem("再プレイ");
+  JMenuItem reLoginItem = new JMenuItem("再ログイン");
+  JMenuItem closeItem = new JMenuItem("終了");
 
   public GameJFrame(){
     //ヴィンドウ初期化
@@ -61,9 +72,8 @@ public class GameJFrame extends JFrame implements KeyListener {
       if(tempArr[i] == 0){
         x = i / 4;
         y = i % 4;
-      }else {
-        data[i / 4][i % 4] = tempArr[i];
       }
+      data[i / 4][i % 4] = tempArr[i];
     }
   }
 
@@ -75,6 +85,10 @@ public class GameJFrame extends JFrame implements KeyListener {
 
     //コンテンツパネル上のすべてのコンポーネントを削除する（画面をリセットするため）
     this.getContentPane().removeAll();
+
+    JLabel stepCount = new JLabel("步数：" + step);
+    stepCount.setBounds(50, 30, 100, 20);
+    this.getContentPane().add(stepCount);
 
     if (victory()){
       JLabel jLabel = new JLabel(new ImageIcon("image\\win.png"));
@@ -135,7 +149,6 @@ public class GameJFrame extends JFrame implements KeyListener {
     this.setLayout(null);
   }
 
-
   /**
    * ゲーム画面のメニューバーを初期化するメソッド。
    * 「機能」メニューに「再プレイ」「再ログイン」「終了」のメニュー項目を追加し、メニューバーに設定する。
@@ -145,15 +158,24 @@ public class GameJFrame extends JFrame implements KeyListener {
 
     JMenu functhionJMenu = new JMenu("機能");
 
-    JMenuItem rePlayItem = new JMenuItem("再プレイ");
-    JMenuItem reLoginItem = new JMenuItem("再ログイン");
-    JMenuItem closeItem = new JMenuItem("終了");
-
+    functhionJMenu.add(changeImage);
     functhionJMenu.add(rePlayItem);
     functhionJMenu.add(reLoginItem);
     functhionJMenu.add(closeItem);
 
     jMenuBar.add(functhionJMenu);
+
+    rePlayItem.addActionListener(this);
+    reLoginItem.addActionListener(this);
+    closeItem.addActionListener(this);
+
+    changeImage.add(girl);
+    changeImage.add(animal);
+    changeImage.add(sport);
+
+    girl.addActionListener(this);
+    animal.addActionListener(this);
+    sport.addActionListener(this);
 
     this.setJMenuBar(jMenuBar);
   }
@@ -200,6 +222,7 @@ public class GameJFrame extends JFrame implements KeyListener {
       data[x][y] = data[x][y - 1];
       data[x][y - 1] = 0;
       y--;
+      step++;
       initImage();
 
     } else if (keyCode == 38) {
@@ -213,6 +236,7 @@ public class GameJFrame extends JFrame implements KeyListener {
         data[x][y] = data[x - 1][y];
         data[x - 1][y] = 0;
         x--;
+        step++;
         initImage();
 
     } else if (keyCode == 39) {
@@ -226,6 +250,7 @@ public class GameJFrame extends JFrame implements KeyListener {
       data[x][y] = data[x][y + 1];
       data[x][y + 1] = 0;
       y++;
+      step++;
       initImage();
 
     } else if (keyCode == 40) {
@@ -239,6 +264,7 @@ public class GameJFrame extends JFrame implements KeyListener {
       data[x][y] = data[x + 1][y];
       data[x + 1][y] = 0;
       x++;
+      step++;
       initImage();
     } else if (keyCode == 65) {
       initImage();
@@ -264,5 +290,43 @@ public class GameJFrame extends JFrame implements KeyListener {
       }
     }
     return true;
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    Object obj = e.getSource();
+    if (obj == rePlayItem){
+      System.out.println("再プレイ");
+      step = 0;
+      initData();
+      initImage();
+
+    } else if (obj == reLoginItem) {
+      System.out.println("再ログイン");
+
+    } else if (obj == closeItem) {
+      System.out.println("終了");
+      System.exit(0);
+
+    } else if (obj == girl) {
+      System.out.println("美人の画像に変更する");
+      path = "image\\girl\\girl" + (random.nextInt(13) + 1) + "\\";
+      initData();
+      initImage();
+
+    } else if (obj == animal) {
+      System.out.println("動物の画像に変更する");
+      path = "image\\animal\\animal" + (random.nextInt(8) + 1) + "\\";
+      initData();
+      initImage();
+
+    } else if (obj == sport) {
+      System.out.println("スポーツの画像に変更する");
+      path = "image\\sport\\sport" + (random.nextInt(10) + 1) + "\\";
+      initData();
+      initImage();
+
+    }
+
   }
 }
